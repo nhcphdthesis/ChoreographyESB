@@ -69,7 +69,7 @@ ChoreographyESB
 * 为了解决异构性，需要mediation。以ESB为代表的集成产品成为实现系统和服务间消息交互的主要媒介
 * conversation要解决消息通道之间的关联和相互约束
 
-    * 简单直接的ad-hoc方式: [simple](https://github.com/nhcphdthesis/ChoreographyESB#conversation4)
+    * 简单直接的ad-hoc方式: [simple](https://github.com/nhcphdthesis/ChoreographyESB#conversation-4)
     * 对conversation进行描述并使用流程引擎管理的方式: [Kopp, et al.](https://github.com/nhcphdthesis/ChoreographyESB#koppchoreography-aware-esb)
 
 ##使用ESB支持BPMN4C的实现：
