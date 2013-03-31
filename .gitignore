@@ -1,4 +1,6 @@
 *.class
+/.mule/
+/.settings
 
 # Package Files #
 *.jar
