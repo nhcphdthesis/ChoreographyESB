@@ -68,7 +68,9 @@ ChoreographyESB
 
 ##BPMN4C：基于BPMN choreography模型的集成会话描述方法
 
-为了规范化描述集成中的会话，我们对BPMN标准进行裁剪和扩展。使用BPMN作为模型基础的好处是：1）BPMN具备图形化元素，直观易理解；2）BPMN中已经定义了choreography与collaboration模型以及conversation模型之间的相互转换。
+为了规范化描述集成中的会话，我们对BPMN标准进行裁剪和扩展，所得的模型命名为BPMN4C（BPMN for Conversation）。BPMN4C包含BPMN中的conversation模型、collaboration模型和choreography模型。
+
+使用BPMN作为模型基础的好处是：1）BPMN具备图形化元素，直观易理解；2）BPMN中已经定义了choreography与collaboration模型以及conversation模型之间的相互转换。
 
 约束：
 需要定义能唯一定位一个message flow的message定义。比如，如果把response分为reject和accept两个message flow，则需要区分两种消息类型。
@@ -92,35 +94,30 @@ ChoreographyESB
 
 ##使用ESB支持BPMN4C的实现：
 
-基本实现方式：
+**基本实现原则**：
 
-* 把BPMN choreography转化为orchestration流程或者规则。把实现每个message flow的channel看做BPMN 流程中的一个task，遵循choreography中定义的control-flow实现channel之间的逻辑。
+* 把BPMN4C模型转化为BPMN orchestration流程模型（mediation process）：把每个choreography task实现为一个receive-send任务对，遵循choreography中定义的control-flow实现channel之间的逻辑；
+* 每个send task或receive task与一个集成channel（mule flow）相关联，集成channel的另一端连接endpoint（由集成引擎或被集成系统提供）；
+* correlation关系（message flow之间的关联）转换为message类型与receive task之间的关联，以及消息correlation key与流程ID之间的关联。并在运行时持久化到correlation表中；
+* mediation流程部署到BPM引擎中；
+* 实现choreography manager以在集成channel中实现endpoint与BPM引擎之间的路由。特别的，根据消息实例ID和类型，查找correlation关系并找到相应的mediation流程实例，以及实现对当前mediation流程状态的查询。
 
-实现示例：
+我们将连接endpoint与BPM引擎中receive task的flow称为inbound flow，将连接BPM流程中send task与接收者endpoint的flow称为outbound flow。
 
-在Activiti中的建模实现：
+基于以上的规则，我们基于mule ESB和activiti流程引擎实现具备集成会话管理能力的集成引擎。我们设计一个mule的component，来实现如上choreography管理的功能：
 
-![Activiti mediation process](http://photo.yupoo.com/jjfd/CJbesoCC/medish.jpg "Activiti mediation process")
+![Choreography Manager](http://photo.yupoo.com/jjfd/CJTY9gHk/CisiU.png)
 
-其中，几个message event分别引用几个message对象的id。
+该component仅用作处理从接收消息端口到activiti的过程。从activiti发送到mule的消息根据预定义的规则发送给相应的receiver。
 
-1. 先考虑web service形式。
+在activiti流程引擎中
 
-- 该流程中receive task对应的operation指向ESB提供给sender的operation实现，send task对应的operation指向receiver提供给ESB的operation实现。
-- event-based gateway用于根据不同receive task接收到消息而选择不同的branch。
-- timer event用于延时。在timer时间窗中进入ESB的消息将无法找到对应的receive task
-
-按照BPMN的定义，message event可以引用operation关联到web service的实现，send task也对应到期望发送的operation实现上。但是，activiti的eclipse编辑器中并未提供service task的属性定义方式。
-【web service方式实现的好处，标准化，即使BPMN引擎或者ESB更换，也不影响已有接口；缺点：需要实现大量web service接口（由ESB实现服务，内部转换为与遗留系统的消息交互）】
-
-2. 如果使用与mule集成的组件？（使用proprietary的接口方式）
-
-- send就是向mule的endpoint发送消息。
+- send就是向mule的vm endpoint发送消息。
 - receive由mule设置variable后signal
 
 这样，BPMN引擎与外部的交互全部通过mule代理。原来的sender和receiver之间的mule flow相当于拆分成两部分：
 
-一部分是从sender接收到消息发送到BPMN引擎
+一部分是从sender接收到消息发送到BPMN引擎（inbound flow）
 比如该流程中的start event，在mule使用HTTP endpoint接收到来自consult的消息后，调用：
 
     RuntimeService.startProcessInstanceByMessage(String messageName);
@@ -131,15 +128,14 @@ ChoreographyESB
     ProcessInstance pi = （查找到的实例）
     Execution execution = runtimeService.createExecutionQuery()
       .processInstanceId(pi.getId())
-      .activityId("waitState")
-      .singleResult();
-    assertNotNull(execution);   
+      .activityId("接收task名称")
+      .singleResult();  
     runtimeService.signal(execution.getId());
 
-另一部分是接收到从BPMN引擎来的数据发送到特定的receiver。
+另一部分是接收到从BPMN引擎来的数据发送到特定的receiver。（outbound flow）
 比如此例中start event之后的send task会发送消息到mule的一个vm，这个endpoint接收后调用customer提供的web service。
 
-**总结：如何实现BPMN定义的choreography？**
+**集成会话实现步骤**
 
 - 把BPMN choreography模型转换为orchestration模型，每个interaction转换为一个receive-BPM和BPM-send对。
 - 实现提供给sender的消息接收服务到BPMN引擎接收消息接口的flow
@@ -153,15 +149,15 @@ ChoreographyESB
 **找到了choreography实例后，如何判断是否有接收该消息实例的receive task实例？**
 在实例中查找当前激活的task，过滤出receive task，再根据receive task关联的消息类型和correlation过滤。
 
-这样的方法解决了Kopp他们方法的问题了吗（其他技术、图形化、重试时间）
--- 似乎现在只是实现了图形化描述。而correlation其实很难图形化，需要用模型定义。
+**实现示例**：
 
-***
-##技术实现
+比如上述集成会话实现为mediation流程：
 
-我们设计一个mule的component，来实现如上choreography管理的功能：
+![Activiti mediation process](http://photo.yupoo.com/jjfd/CJbesoCC/medish.jpg "Activiti mediation process")
 
-![Choreography Manager](http://photo.yupoo.com/jjfd/CJTY9gHk/CisiU.png)
+其中，几个receive task对应的message event分别引用几个message对象的id。
+
+该组件运行方式如下：
 
 1. 首先从总线上接收一个消息实例；【比如一个检查状态消息】
 2. 根据这个消息实例的correlation id，判断是否有BPMN流程实例与其关联；【根据检查状态中的order id，查找其对应的流程id，并到activiti中查找这个流程id的实例】
@@ -170,12 +166,9 @@ ChoreographyESB
 5. 若没有，则判断是否有流程能被这个类型的消息实例启动；【查询所有部署的流程定义，是否有以】
 6. 若以上判断都没有，说明该消息实例未在choreography设计预期内，路由给异常处理模块；
 
-该component仅用作处理从接收消息端口到activiti的过程。从activiti发送到mule的消息根据预定义的规则发送给相应的receiver。
-
+***
 
 ##医疗中的conversation模板和集成引擎支持
-
-
 
 
 医疗IT集成场景中包含大量类似的conversation，比如以order为核心的conversation，出现在IHE的放射检查、病理、心电、实验室检验等profile中。形成一种非常接近的conversation pattern。
