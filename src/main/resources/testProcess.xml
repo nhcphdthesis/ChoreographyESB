@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:core="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="CE-3.3.0" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd 
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd ">
+    <flow name="createProcessFlow" doc:name="createProcessFlow">
+        <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8081" path="test" doc:name="HTTP"/>
+        <logger level="INFO" doc:name="Logger"/>
+        <component class="org.nhc.component.CreateProcess" doc:name="JavaTest"/>
+    </flow>
+    <flow name="routeBPMFlow" doc:name="routeBPMFlow">
+        <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8081" path="activiti" doc:name="HTTP"/>
+        <component class="org.nhc.component.SendToActiviti" doc:name="Java"/>
+    </flow>
+    <flow name="deployFlow" doc:name="deployFlow">
+        <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8081" path="deploy" doc:name="HTTP"/>
+        <component class="org.nhc.component.DeployProcess" doc:name="Java"/>
+    </flow>
+    <flow name="receiveBPMFlow" doc:name="receiveBPMFlow">
+        <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8081" path="receive" doc:name="HTTP"/>
+        <logger level="INFO" doc:name="Logger"/>
+    </flow>
+    <flow name="vmReceiveFlow" doc:name="vmReceiveFlow">
+        <vm:inbound-endpoint exchange-pattern="one-way" path="receive" doc:name="VM"/>
+        <logger level="INFO" doc:name="Logger"/>
+    </flow>
+</mule>

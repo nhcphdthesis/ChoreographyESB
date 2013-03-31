@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mule-configuration xmlns="http://www.mulesoft.com/tooling/messageflow" name="dummy">
+    <global-element name="VM" type="http://www.mulesoft.org/schema/mule/vm/connector" entity-id="ec611e25-24cd-4516-b332-6922f4078c66">
+        <properties>
+            <property name="dispatcherPoolFactory-ref" value=""/>
+            <property name="maxOutstandingMessages" value="0"/>
+            <property name="name" value="VM"/>
+            <property name="validateConnections" value="true"/>
+            <property name="dynamicNotification" value="false"/>
+            <property name="queueTimeout" value="10000"/>
+            <property-collection name="@http://www.mulesoft.org/schema/mule/vm/queue-profile;25224630">
+                <property name="maxOutstandingMessages" value="0"/>
+            </property-collection>
+        </properties>
+        <description></description>
+    </global-element>
+    <description></description>
+</mule-configuration>

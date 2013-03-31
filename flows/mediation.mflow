@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mule-configuration xmlns="http://www.mulesoft.com/tooling/messageflow" name="mediation">
+    <flow SubFlow="false" name="ReceiveFromAflow" entity-id="173a7d66-ea42-4897-9f16-8f505e65acf0">
+        <properties>
+            <property name="processingStrategy2" value=""/>
+        </properties>
+        <description></description>
+        <lane hadOnlyOneElement="false" entity-id="73cf075d-4b55-40e4-8703-12de5973d03f">
+            <endpoint direction="Inbound" message-exchange-pattern="RequestResponse" name="HTTP" type="http://www.mulesoft.org/schema/mule/https/endpoint" entity-id="709d2bee-3af0-49a0-abea-4b42a25820a1">
+                <properties>
+                    <property name="port" value="8081"/>
+                    <property name="host" value="localhost"/>
+                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/http/endpoint"/>
+                    <property name="keep-alive" value="false"/>
+                    <property name="contentType" value=""/>
+                    <property name="disableTransportTransformer" value="false"/>
+                    <property name="password" value=""/>
+                    <property name="exchange-pattern" value="request-response"/>
+                    <property name="ref" value=""/>
+                    <property name="transformer-refs" value=""/>
+                    <property name="httpLabel" value=""/>
+                    <property name="address" value=""/>
+                    <property name="path" value="receiveA"/>
+                    <property name="encoding" value=""/>
+                    <property name="responseTransformer-refs" value=""/>
+                    <property name="user" value=""/>
+                    <property name="responseTimeout" value="10000"/>
+                    <property name="mimeType" value=""/>
+                    <property name="connector-ref" value=""/>
+                </properties>
+                <description></description>
+            </endpoint>
+            <pattern name="Logger" type="http://www.mulesoft.org/schema/mule/core/logger" entity-id="e18d99aa-bd7a-4dcc-a1af-4f57cec68884"/>
+            <pattern name="Choreography Manager" type="http://www.mulesoft.org/schema/mule/core/component" entity-id="f88eeabd-e0a4-49af-aa9b-68744ee1bddd">
+                <properties>
+                    <property name="ref" value=""/>
+                    <property name="class" value="org.nhc.component.StartMediationProcess"/>
+                    <property-collection name="@http://www.mulesoft.org/schema/mule/core/refInterceptorStackType;17188222">
+                        <property name="ref" value=""/>
+                    </property-collection>
+                </properties>
+                <description></description>
+            </pattern>
+        </lane>
+    </flow>
+    <flow SubFlow="false" name="ListnerBflow" entity-id="b45ab841-b23c-4c2e-9248-1174d7e509d4">
+        <properties>
+            <property name="processingStrategy2" value=""/>
+        </properties>
+        <description></description>
+        <lane hadOnlyOneElement="false" entity-id="0188b244-4d84-465d-baae-2a49f653c115">
+            <endpoint direction="Inbound" message-exchange-pattern="RequestResponse" name="HTTP" type="http://www.mulesoft.org/schema/mule/https/endpoint" entity-id="29ea55dd-c521-4dff-89c3-22dbbdc764ca">
+                <properties>
+                    <property name="port" value="8081"/>
+                    <property name="host" value="localhost"/>
+                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/http/endpoint"/>
+                    <property name="keep-alive" value="false"/>
+                    <property name="contentType" value=""/>
+                    <property name="disableTransportTransformer" value="false"/>
+                    <property name="password" value=""/>
+                    <property name="exchange-pattern" value="request-response"/>
+                    <property name="ref" value=""/>
+                    <property name="transformer-refs" value=""/>
+                    <property name="httpLabel" value=""/>
+                    <property name="address" value=""/>
+                    <property name="path" value="listnerB"/>
+                    <property name="encoding" value=""/>
+                    <property name="responseTransformer-refs" value=""/>
+                    <property name="user" value=""/>
+                    <property name="responseTimeout" value="10000"/>
+                    <property name="mimeType" value=""/>
+                    <property name="connector-ref" value=""/>
+                </properties>
+                <description></description>
+            </endpoint>
+            <pattern name="Logger" type="http://www.mulesoft.org/schema/mule/core/logger" entity-id="79bfa0f4-9ad6-459c-8309-4c492ac10da3"/>
+        </lane>
+    </flow>
+    <flow SubFlow="false" name="ReceiveFromBflow" entity-id="ca8da4e8-354e-4735-9053-37432d62dfa4">
+        <properties>
+            <property name="processingStrategy2" value=""/>
+        </properties>
+        <description></description>
+        <lane hadOnlyOneElement="false" entity-id="7ca0005e-99af-4c9f-a25c-8ab38aa6001a">
+            <endpoint direction="Inbound" message-exchange-pattern="RequestResponse" name="HTTP" type="http://www.mulesoft.org/schema/mule/https/endpoint" entity-id="31baf447-07e9-42d3-8615-d9ad21b7e245">
+                <properties>
+                    <property name="port" value="8081"/>
+                    <property name="host" value="localhost"/>
+                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/http/endpoint"/>
+                    <property name="keep-alive" value="false"/>
+                    <property name="contentType" value=""/>
+                    <property name="disableTransportTransformer" value="false"/>
+                    <property name="password" value=""/>
+                    <property name="exchange-pattern" value="request-response"/>
+                    <property name="ref" value=""/>
+                    <property name="transformer-refs" value=""/>
+                    <property name="httpLabel" value=""/>
+                    <property name="address" value=""/>
+                    <property name="path" value="receiveB"/>
+                    <property name="encoding" value=""/>
+                    <property name="responseTransformer-refs" value=""/>
+                    <property name="user" value=""/>
+                    <property name="responseTimeout" value="10000"/>
+                    <property name="mimeType" value=""/>
+                    <property name="connector-ref" value=""/>
+                </properties>
+                <description></description>
+            </endpoint>
+            <pattern name="Logger" type="http://www.mulesoft.org/schema/mule/core/logger" entity-id="e5756201-92d9-48f4-89ac-7a5755ef58bd"/>
+            <pattern name="Choreography Manager" type="http://www.mulesoft.org/schema/mule/core/component" entity-id="170792f3-1822-49b2-a56d-a8df3ae07a07">
+                <properties>
+                    <property name="ref" value=""/>
+                    <property name="class" value="org.nhc.component.SendToMediationProcess"/>
+                    <property-collection name="@http://www.mulesoft.org/schema/mule/core/refInterceptorStackType;180564">
+                        <property name="ref" value=""/>
+                    </property-collection>
+                </properties>
+                <description></description>
+            </pattern>
+        </lane>
+    </flow>
+    <flow SubFlow="false" name="ListnerAflow" entity-id="6e090f1c-968e-43a4-9b79-70a7fc2d7268">
+        <properties>
+            <property name="processingStrategy2" value=""/>
+        </properties>
+        <description></description>
+        <lane hadOnlyOneElement="false" entity-id="95e77e09-c9ef-4029-87be-97f904dc71de">
+            <endpoint direction="Inbound" message-exchange-pattern="RequestResponse" name="HTTP" type="http://www.mulesoft.org/schema/mule/https/endpoint" entity-id="7af96f87-8367-4345-bc15-47c79b3db315">
+                <properties>
+                    <property name="port" value="8081"/>
+                    <property name="host" value="localhost"/>
+                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/http/endpoint"/>
+                    <property name="keep-alive" value="false"/>
+                    <property name="contentType" value=""/>
+                    <property name="disableTransportTransformer" value="false"/>
+                    <property name="password" value=""/>
+                    <property name="exchange-pattern" value="one-way"/>
+                    <property name="ref" value=""/>
+                    <property name="transformer-refs" value=""/>
+                    <property name="httpLabel" value=""/>
+                    <property name="address" value=""/>
+                    <property name="path" value="lisnterA"/>
+                    <property name="encoding" value=""/>
+                    <property name="user" value=""/>
+                    <property name="responseTimeout" value="10000"/>
+                    <property name="mimeType" value=""/>
+                    <property name="connector-ref" value=""/>
+                </properties>
+                <description></description>
+            </endpoint>
+            <pattern name="Logger" type="http://www.mulesoft.org/schema/mule/core/logger" entity-id="db76d309-b167-4583-8ff6-270da7887158"/>
+        </lane>
+    </flow>
+    <flow SubFlow="false" name="deployFlow2" entity-id="dd8349f5-a54e-4d1d-a9df-d7ca093888be">
+        <properties>
+            <property name="processingStrategy2" value=""/>
+        </properties>
+        <description></description>
+        <lane hadOnlyOneElement="false" entity-id="4fb8580c-7c85-4b51-a447-5cacb5d56097">
+            <endpoint direction="Inbound" message-exchange-pattern="RequestResponse" name="HTTP" type="http://www.mulesoft.org/schema/mule/https/endpoint" entity-id="6fd4867c-41c8-486b-afe4-3e8f37445627">
+                <properties>
+                    <property name="port" value="8081"/>
+                    <property name="host" value="localhost"/>
+                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/http/endpoint"/>
+                    <property name="keep-alive" value="false"/>
+                    <property name="contentType" value=""/>
+                    <property name="disableTransportTransformer" value="false"/>
+                    <property name="password" value=""/>
+                    <property name="exchange-pattern" value="request-response"/>
+                    <property name="ref" value=""/>
+                    <property name="transformer-refs" value=""/>
+                    <property name="httpLabel" value=""/>
+                    <property name="address" value=""/>
+                    <property name="path" value="deploy2"/>
+                    <property name="encoding" value=""/>
+                    <property name="responseTransformer-refs" value=""/>
+                    <property name="user" value=""/>
+                    <property name="responseTimeout" value="10000"/>
+                    <property name="mimeType" value=""/>
+                    <property name="connector-ref" value=""/>
+                </properties>
+                <description></description>
+            </endpoint>
+            <pattern name="Java" type="http://www.mulesoft.org/schema/mule/core/component" entity-id="4db44db1-b266-486f-a067-7737e29df56e">
+                <properties>
+                    <property name="ref" value=""/>
+                    <property name="class" value="org.nhc.component.DeployProcess"/>
+                    <property-collection name="@http://www.mulesoft.org/schema/mule/core/refInterceptorStackType;2395747">
+                        <property name="ref" value=""/>
+                    </property-collection>
+                </properties>
+                <description></description>
+            </pattern>
+        </lane>
+    </flow>
+    <description></description>
+</mule-configuration>
