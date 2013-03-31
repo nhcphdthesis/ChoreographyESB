@@ -2,6 +2,24 @@ ChoreographyESB
 ===============
 本工具用于使用mule ESB和activiti BPM引擎来实现集成中多个消息流之间关系的规范化定义和运行时支持。我们把一个集成场景中多个相关的消息流定义为一个会话（conversation）。
 
+该项目包含了如下集成会话中的整体约束示例：
+
+1. 交互双方为A和B；
+2. A发送请求至B，B进行回复；
+3. 整体约束要求请求与回复消息之间间隔T时间以上。
+
+![scenario]( "Conversation Scenario")
+
+该示例包含如下实现元素：
+
+1. 使用BPMN描述的mediation process；
+2. 使用mule实现的两个inbound flow（flow 1 & flow 3），对外提供HTTP endpoint（endpoint 1 & 3），在flow中根据传入的消息触发mediation流程中的receive task。传入的消息包括A发出的请求消息和B发出的回应消息；
+3. 实现传入消息与mediation流程中receive task映射的component（component 1 & 3）；
+4. 实现流程中send task的outbound flow（flow 2 & flow 4），以java组件形式实现（component 2 & 4），通过mule client调用交互双方提供的交互接口，包括B提供的接收请求接口和A提供的接收响应接口；
+5. 用于模拟A和B接收接口的两个flow，提供HTTP endpoint（endpoint 2 & 4）
+
+![implementation]( "impl")
+
 #Conversation的由来：
 
 1. SOA已经成为企业集成的主要方式，把各种系统封装为服务，实现这些服务之间的交互以及协同工作。随着集成从最简单的request-reply发展为更复杂的conversation，一些业务流程被封装为服务，而这些服务的实现依赖于多次相互关联的与服务调用者的消息交互。特别是通过组合原子服务得到的composite service之间的交互，涉及多次消息交互，也有可能涉及多个参与方。比如电子商务中的quote（问价）、order（订单）、shipment（发货）、invoice（发票）、payment（付款）、refund（退款）。
