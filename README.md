@@ -8,17 +8,17 @@ ChoreographyESB
 2. A发送请求至B，B进行回复；
 3. 整体约束要求请求与回复消息之间间隔T时间以上。
 
-![scenario]( "Conversation Scenario")
+![scenario](http://pic.yupoo.com/jjfd/CKDWi4OZ/medish.jpg "Conversation Scenario")
 
 该示例包含如下实现元素：
 
 1. 使用BPMN描述的mediation process；
 2. 使用mule实现的两个inbound flow（flow 1 & flow 3），对外提供HTTP endpoint（endpoint 1 & 3），在flow中根据传入的消息触发mediation流程中的receive task。传入的消息包括A发出的请求消息和B发出的回应消息；
 3. 实现传入消息与mediation流程中receive task映射的component（component 1 & 3）；
-4. 实现流程中send task的outbound flow（flow 2 & flow 4），以java组件形式实现（component 2 & 4），通过mule client调用交互双方提供的交互接口，包括B提供的接收请求接口和A提供的接收响应接口；
+4. 实现流程中send task的outbound flow（flow 2 & flow 4），以java组件形式实现（component 2 & 4），通过mule client调用交互双方提供的交互接口，包括B提供的接收请求接口和A提供的接收响应接口；【可优化，比如实现为发送消息到mule的vm endpoint，然后定义outbound flow实现具体的发送】
 5. 用于模拟A和B接收接口的两个flow，提供HTTP endpoint（endpoint 2 & 4）
 
-![implementation]( "impl")
+![implementation](http://photo.yupoo.com/jjfd/CKDWyF5u/medish.jpg "impl")
 
 #Conversation的由来：
 
@@ -148,7 +148,8 @@ ChoreographyESB
 - 具备了这些结构的ESB，就是具备了conversation管理能力的ESB（或者，叫choreography-aware ESB）
 
 **如何找到一个消息实例对应哪个choreography实例？**
-对于这个流程来说，定义一个流程变量，用于存储流程ID，然后定义key-based correlation，
+我们假定在交互者之间已经定义了correlation方法，在choreography manager中需要维护各个business correlation与流程实例ID的correlation。
+
 **找到了choreography实例后，如何判断是否有接收该消息实例的receive task实例？**
 在实例中查找当前激活的task，过滤出receive task，再根据receive task关联的消息类型和correlation过滤。
 
