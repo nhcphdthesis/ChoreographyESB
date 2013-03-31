@@ -32,16 +32,6 @@ ChoreographyESB
 
 ***
 
-# conversation的实现方式：历史回顾
-* 自发实现：依赖各自完全遵循global agreement，并且紧密耦合。
-* 为了解耦合，引入中间件做proxy
-* 为了解决异构性，需要mediation。以ESB为代表的集成产品成为实现系统和服务间消息交互的主要媒介
-* conversation要解决消息通道之间的关联和相互约束
-
-    * 简单直接的ad-hoc方式
-    * 对conversation进行描述并使用流程引擎管理的方式
-
-_这两种方式的实现描述见下面的**更多……**部分_
 
 #集成会话的描述
 
@@ -71,7 +61,18 @@ _这两种方式的实现描述见下面的**更多……**部分_
 
 ![Temporal Constaint Choreography](http://photo.yupoo.com/jjfd/CJbbBguf/medish.jpg" Temporal Constaint Choreography")
 
-#使用ESB支持BPMN4C的实现：
+#集成会话的实现：
+
+## conversation的实现方式：历史回顾
+* 自发实现：依赖各自完全遵循global agreement，并且紧密耦合。
+* 为了解耦合，引入中间件做proxy
+* 为了解决异构性，需要mediation。以ESB为代表的集成产品成为实现系统和服务间消息交互的主要媒介
+* conversation要解决消息通道之间的关联和相互约束
+
+    * 简单直接的ad-hoc方式: [simple](https://github.com/nhcphdthesis/ChoreographyESB#conversation4)
+    * 对conversation进行描述并使用流程引擎管理的方式: [Kopp, et al.](https://github.com/nhcphdthesis/ChoreographyESB#koppchoreography-aware-esb)
+
+##使用ESB支持BPMN4C的实现：
 
 基本实现方式：
 
